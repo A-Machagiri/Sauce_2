@@ -1,46 +1,47 @@
+using System;
 using TechTalk.SpecFlow;
-using PageObjects.Login;
-using Utilities.WebUtilities;
+using NUnit.Framework;
 
-[Binding]
-public class LoginSteps
+namespace Test_Layer.StepDefinitions
 {
-    private LoginPage_Actions _loginPageActions;
-
-    public LoginSteps(WebUtilities webUtilities)
+    [Binding]
+    public class LoginSteps
     {
-        _loginPageActions = new LoginPage_Actions(webUtilities);
-    }
+        private readonly LoginPage_Actions _loginPageActions;
 
-    [Given("I am on the login page")]
-    public void GivenIAmOnTheLoginPage()
-    {
-        // Implementation to navigate to login page
-    }
+        public LoginSteps()
+        {
+            _loginPageActions = new LoginPage_Actions();
+        }
 
-    [When("I enter valid credentials")]
-    public void WhenIEnterValidCredentials()
-    {
-        _loginPageActions.EnterCredentials("standard_user", "secret_sauce");
-    }
+        [Given("I navigate to the login page")]
+        public void GivenINavigateToTheLoginPage()
+        {
+            _loginPageActions.NavigateToLoginPage();
+        }
 
-    [When("I enter invalid credentials")]
-    public void WhenIEnterInvalidCredentials()
-    {
-        _loginPageActions.EnterCredentials("invalid_user", "wrong_password");
-    }
+        [When("I enter valid credentials")]
+        public void WhenIEnterValidCredentials()
+        {
+            _loginPageActions.EnterCredentials("standard_user", "secret_sauce");
+        }
 
-    [Then("I should be redirected to the product page")]
-    public void ThenIShouldBeRedirectedToTheProductPage()
-    {
-        var title = _loginPageActions.GetProductPageTitle();
-        Assert.AreEqual("Products", title);
-    }
+        [When("I enter invalid credentials")]
+        public void WhenIEnterInvalidCredentials()
+        {
+            _loginPageActions.EnterCredentials("invalid_user", "wrong_password");
+        }
 
-    [Then("I should see an error message")]
-    public void ThenIShouldSeeAnErrorMessage()
-    {
-        var errorMessage = _loginPageActions.GetErrorMessage();
-        Assert.IsTrue(errorMessage.Contains("error"));
+        [Then("I should be logged in successfully")]
+        public void ThenIShouldBeLoggedInSuccessfully()
+        {
+            Assert.IsTrue(_loginPageActions.IsLoggedInSuccessfully(), "Login was not successful.");
+        }
+
+        [Then("I should see an error message")]
+        public void ThenIShouldSeeAnErrorMessage()
+        {
+            Assert.IsTrue(_loginPageActions.IsErrorMessageDisplayed(), "Error message was not displayed.");
+        }
     }
 }

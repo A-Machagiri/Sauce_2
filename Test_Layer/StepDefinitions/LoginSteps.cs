@@ -35,19 +35,24 @@ namespace Test_Layer.StepDefinitions
             Assert.IsTrue(loginPage.IsOnProductsPage());
         }
 
+        [When("I enter valid username '(.*)' and password '(.*)'")]
         [When("I enter invalid username '(.*)' and valid password '(.*)'")]
-        public void WhenIEnterInvalidUsernameAndValidPassword(string username, string password)
+        [When("I leave the username field empty and enter password '(.*)'")]
+        [When("I enter username '(.*)' and leave the password field empty")]
+        public void WhenIEnterCredentials(string username, string password)
         {
             loginPage.EnterCredentials(username, password);
             loginPage.ClickLoginButton();
         }
 
-        [Then("I should see an error message indicating invalid username")]
-        public void ThenIShouldSeeAnErrorMessageIndicatingInvalidUsername()
+        [Then("I should be redirected to the products page")]
+        [Then("an error message should be displayed indicating (.*)")]
+        public void ThenCheckResult(string message)
         {
-            Assert.AreEqual("Error: Username and password do not match any user in this service", loginPage.GetErrorMessage());
+            if (message.Contains("redirected to the products page"))
+                Assert.IsTrue(loginPage.IsOnProductsPage());
+            else
+                Assert.AreEqual(message, loginPage.GetErrorMessage());
         }
-
-        // Additional steps for other scenarios can be added here
     }
 }
